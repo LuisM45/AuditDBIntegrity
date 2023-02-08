@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
@@ -22,12 +23,12 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
     DefaultTableModel modeloSinDatos = new DefaultTableModel();
     DefaultTableModel modeloTriggers = new DefaultTableModel();
     
-    ArrayList<String[]> listaAConDatos;
+    List<String[]> listaAConDatos;
     /**
      * Creates new form GUIMenuPrincipal
      */
 
-    ArrayList<String> miListaIntRef;
+    List<String> miListaIntRef;
     DBConection miCon;
 
     public GUIMenuPrincipal(DBConection miCon) {

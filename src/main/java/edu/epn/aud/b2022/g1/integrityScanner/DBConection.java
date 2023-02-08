@@ -6,6 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -55,21 +57,28 @@ public class DBConection {
 
         connection = DriverManager.getConnection(connectionUrl);
     }
+    
+    public List<String> getConstraints() throws SQLException{
+        String query =
+                "SELECT name FROM sys.check_constraints " +
+                "UNION " +
+                "SELECT name FROM sys.foreign_keys; ";
+        Statement stmt = this.connection.createStatement();
+        ResultSet rs = stmt.executeQuery(query);
+        
+        List<String> constraints = new LinkedList<>();
+        while(rs.next()){
+            constraints.add(rs.getString("name"));
+        }
+        stmt.close();
+        rs.close();
+        
+        return constraints;
+    }
 
-    public ArrayList <String> getReferentialIntegrityList(){
+    public List <String> getReferentialIntegrityList(){
         try{
-            String SQL = "SELECT name FROM sys.check_constraints " +
-                        "UNION " +
-                        "SELECT name FROM sys.foreign_keys;";
-            Statement stmt = this.connection.createStatement();
-            ResultSet rs = stmt.executeQuery(SQL);
-            ArrayList<String> listaIntRef = new ArrayList<>();
-            
-            while (rs.next()) {
-                listaIntRef.add(rs.getString("name"));
-            }
-            
-            return listaIntRef;
+            return getConstraints();
         }catch(Exception e){
             e.printStackTrace();
             return null;
@@ -77,7 +86,7 @@ public class DBConection {
     }
     
     
-    public ArrayList<String[]> getDatefulAnomalies(ArrayList<String> miLista){
+    public ArrayList<String[]> getDatefulAnomalies(List<String> miLista){
         try{
             
             ArrayList<String[]> listaAConDatos = new ArrayList<>();
