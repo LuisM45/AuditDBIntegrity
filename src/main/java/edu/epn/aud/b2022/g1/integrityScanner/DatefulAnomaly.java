@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package edu.epn.aud.b2022.g1.integrityScanner;
 
 public class DatefulAnomaly {
@@ -19,6 +15,4 @@ public class DatefulAnomaly {
     public String toString() {
         return "DatefulAnomaly{" + "table=" + table + ", constraint=" + constraint + ", where=" + where + '}';
     }
-    
-    
 }
