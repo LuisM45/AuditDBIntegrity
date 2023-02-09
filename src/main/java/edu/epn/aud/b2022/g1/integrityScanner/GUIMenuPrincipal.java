@@ -5,11 +5,14 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -23,7 +26,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
     DefaultTableModel modeloSinDatos = new DefaultTableModel();
     DefaultTableModel modeloTriggers = new DefaultTableModel();
     
-    List<String[]> listaAConDatos;
+    List<DatefulAnomaly> datefulAnomalies;
     /**
      * Creates new form GUIMenuPrincipal
      */
@@ -48,12 +51,14 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         modeloTriggers.addColumn("Nombre Trigger");
         modeloTriggers.addColumn("Tabla");
         modeloTriggers.addColumn("Habilitado");
-        modeloTriggers.addColumn("INSERT");
-        modeloTriggers.addColumn("UPDATE");
-        modeloTriggers.addColumn("DELETE");
+        modeloTriggers.addColumn("Operacion");
         this.tblTriggers.setModel(modeloTriggers);
         
-        miListaIntRef = miCon.getReferentialIntegrityList();
+        try {
+            miListaIntRef = miCon.getConstraints();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -90,7 +95,6 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         btnSalir.setBackground(new java.awt.Color(0, 78, 191));
         btnSalir.setFont(new java.awt.Font("Cascadia Mono", 1, 14)); // NOI18N
         btnSalir.setForeground(new java.awt.Color(255, 255, 255));
-        btnSalir.setIcon(new javax.swing.ImageIcon("D:\\Materias\\Auditoria Informatica\\AppTrabajo3\\AuditDBIntegrity\\Imagenes\\Salir.png")); // NOI18N
         btnSalir.setText("SALIR");
         btnSalir.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnSalir.addActionListener(new java.awt.event.ActionListener() {
@@ -102,7 +106,6 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         btnGenerarLogs.setBackground(new java.awt.Color(0, 78, 191));
         btnGenerarLogs.setFont(new java.awt.Font("Cascadia Mono", 1, 14)); // NOI18N
         btnGenerarLogs.setForeground(new java.awt.Color(255, 255, 255));
-        btnGenerarLogs.setIcon(new javax.swing.ImageIcon("D:\\Materias\\Auditoria Informatica\\AppTrabajo3\\AuditDBIntegrity\\Imagenes\\LOG.png")); // NOI18N
         btnGenerarLogs.setText("GENERAR LOGS");
         btnGenerarLogs.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         btnGenerarLogs.addActionListener(new java.awt.event.ActionListener() {
@@ -192,7 +195,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, true, false
+                false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -348,15 +351,23 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
         tblTriggers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4", "nullA", "nullB"
+                "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         jScrollPane1.setViewportView(tblTriggers);
 
         btnGenerarTriggers.setBackground(new java.awt.Color(0, 78, 191));
@@ -460,8 +471,12 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnSalirActionPerformed
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
-        // TODO add your handling code here:
-        miListaIntRef = miCon.getReferentialIntegrityList();
+        try {
+            // TODO add your handling code here:
+            miListaIntRef = miCon.getConstraints();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         DefaultListModel modelo = new DefaultListModel();
         for (String bucle : miListaIntRef) {
             modelo.addElement(bucle);
@@ -472,11 +487,16 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void btnAnomaliasCONdatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasCONdatosActionPerformed
-        // TODO add your handling code here:
-        listaAConDatos = miCon.getDatefulAnomalies(miListaIntRef);
+        try {
+            // TODO add your handling code here:
+            datefulAnomalies = miCon.getDatefulAnomalies();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         //DefaultListModel modelo = new DefaultListModel();
-        for (String[] bucle : listaAConDatos) {
-            modeloUno.addRow(bucle);
+        for (DatefulAnomaly anomaly : datefulAnomalies) {
+            modeloUno.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
         }
 
         this.tblAnomaliasCONdatos.setModel(modeloUno);
@@ -487,14 +507,14 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
     private void btnAnomaliasSinDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasSinDatosActionPerformed
         // TODO add your handling code here:
-        ArrayList<String[]> listaASinDatos = miCon.getDatelessAnomalies();
-        String[] auxx = {"PK_Categories", "CategoryID", "Categories"};
-        String[] auxdos = {"", "CategoryID", "Products"};
-        
-        listaASinDatos.add(auxx);
-        listaASinDatos.add(auxdos);
-        for (String[] bucle : listaASinDatos) {
-            modeloSinDatos.addRow(bucle);
+        List<DatefulAnomaly> anomalies = new ArrayList<>(0);
+        try {
+            anomalies = miCon.getDatelessAnomalies();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (DatefulAnomaly anomaly : anomalies) {
+            modeloSinDatos.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
         }
 
         this.tblAnomaliasSINdatos.setModel(modeloSinDatos);
@@ -504,17 +524,28 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
     private void btnGenerarTriggersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarTriggersActionPerformed
         // TODO add your handling code here:
-        ArrayList<Object[]> listaTriggers = miCon.getTriggers();
-        for (Object[] bucle : listaTriggers) {
-            modeloTriggers.addRow(bucle);
+        List<Trigger> triggers = new ArrayList<>(0);
+        try {
+            triggers = miCon.getTriggers();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        for (Trigger trigger : triggers){
+            modeloTriggers.addRow(
+                    new String[]{
+                        trigger.name,
+                        trigger.table,
+                        String.valueOf(trigger.isEnabled),
+                        trigger.triggerType.toString(),
+                        "",
+                        ""
+                    });
         }
 
         this.tblTriggers.setModel(modeloTriggers);
     }//GEN-LAST:event_btnGenerarTriggersActionPerformed
 
     private void btnGenerarLogsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarLogsActionPerformed
-        // TODO add your handling code here:
-
         String ruta = "IntegridadReferencial.txt";
         File f = new File(ruta);
         FileWriter fw = null;
@@ -544,17 +575,24 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         }
 
         //****************************************************************************
-        ArrayList<String[]> miLista = miCon.getDatefulAnomalies(miListaIntRef);
+        List<DatefulAnomaly> miLista = new ArrayList<>(0);
+        try {
+            miLista = miCon.getDatefulAnomalies();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         try {
             String miRutaUno = "anomaliasConDatos.txt";
 
             String aux = "";
-            for (String[] bucle : miLista) {
-                aux += Arrays.toString(bucle) + "\n";
+            for (DatefulAnomaly anomalia : miLista) {
+                aux += Stream.of(anomalia.constraint,anomalia.table,anomalia.where)
+                        .map(String::valueOf)
+                        .map(s1->s1+" ")
+                        .reduce("", (s1,s2)->s1+s2)+"\n";
             }
 
-            System.out.println(aux);
             File fileUno = new File(miRutaUno);
             // Si el archivo no existe es creado
             if (!fileUno.exists()) {
@@ -566,20 +604,26 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             bwUno.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("hubo un error qui");
         }
 
         //**************************************************************************************
-        ArrayList<String[]> miListaDos= miCon.getDatelessAnomalies();
+        List<DatefulAnomaly> miListaDos = new ArrayList<>(0);
+        try {
+            miListaDos = miCon.getDatelessAnomalies();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             String miRutaDos = "anomaliasSinDatos.txt";
 
             String aux = "";
-            for (String[] bucle : miListaDos) {
-                aux += Arrays.toString(bucle) + "\n";
+            for (DatefulAnomaly anomalia : miListaDos) {
+                aux += Stream.of(anomalia.constraint,anomalia.table,anomalia.where)
+                        .map(String::valueOf)
+                        .map(s1->s1+" ")
+                        .reduce("", (s1,s2)->s1+s2)+"\n";
             }
 
-            System.out.println(aux);
             File fileDos = new File(miRutaDos);
             // Si el archivo no existe es creado
             if (!fileDos.exists()) {
@@ -591,21 +635,31 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             bwDos.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("hubo un error qui");
         }
 
         
         //************************************************************************
-        ArrayList<Object[]> miListaTres= miCon.getTriggers();
+        List<Trigger> miListaTres = new ArrayList<>(0);
+        try {
+            miListaTres = miCon.getTriggers();
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         try {
             String miRutaTres = "auditoriaIUD.txt";
 
             String aux = "";
-            for (Object[] bucle : miListaTres) {
-                aux += Arrays.toString(bucle) + "\n";
+            for (Trigger trigger : miListaTres) {
+                aux += Stream.of(
+                        trigger.name,
+                        trigger.table,
+                        (Boolean)trigger.isEnabled,
+                        trigger.triggerType)
+                    .map(String::valueOf)
+                    .map(s1->s1+" ")
+                    .reduce("", (s1,s2)->s1+s2)+"\n";
             }
 
-            System.out.println(aux);
             File fileTres = new File(miRutaTres);
             // Si el archivo no existe es creado
             if (!fileTres.exists()) {
@@ -617,7 +671,6 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             bwTres.close();
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("hubo un error qui");
         }
 
     }//GEN-LAST:event_btnGenerarLogsActionPerformed
