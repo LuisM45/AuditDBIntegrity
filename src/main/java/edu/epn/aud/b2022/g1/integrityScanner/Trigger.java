@@ -2,12 +2,13 @@ package edu.epn.aud.b2022.g1.integrityScanner;
 
 
 public class Trigger {
+    public static enum Type {INSERT,UPDATE,DELETE}
     public final String name;
     public final String table;
     public final boolean isEnabled;
-    public final TriggerType triggerType;
+    public final Type triggerType;
 
-    public Trigger(String name, String table, boolean isEnabled, TriggerType triggerType) {
+    public Trigger(String name, String table, boolean isEnabled, Type triggerType) {
         this.name = name;
         this.table = table;
         this.isEnabled = isEnabled;

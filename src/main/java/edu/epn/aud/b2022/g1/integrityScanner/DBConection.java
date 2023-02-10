@@ -166,7 +166,7 @@ public class DBConection {
             String name = rs.getString("trigger_name");
             String table = rs.getString("table_name");
             boolean isEnabled = !rs.getBoolean("is_disabled");
-            TriggerType triggerType = TriggerType.valueOf(rs.getString("type_desc"));
+            Trigger.Type triggerType = Trigger.Type.valueOf(rs.getString("type_desc"));
             
             triggers.add(new Trigger(name,table,isEnabled,triggerType));
         }
