@@ -1,5 +1,8 @@
 package edu.epn.aud.b2022.g1.integrityScanner;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,9 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
-public class DBConection {
-    private static DBConection conexionBD = null;
+public class IntegrityManager {
+    private static IntegrityManager conexionBD = null;
     
     private final String host;
     private final String port;
@@ -22,7 +26,7 @@ public class DBConection {
     
     public Connection connection;
 
-    private DBConection(String host, String port, String schema, String username, String password) throws SQLException {
+    private IntegrityManager(String host, String port, String schema, String username, String password) throws SQLException {
         this.host = host;
         this.port = port;
         this.schema = schema;
@@ -31,15 +35,15 @@ public class DBConection {
         setConnection();
     }
     
-    public static DBConection getConnection(String host, String port, String schema, String username, String password) throws SQLException{
-        if(conexionBD == null) conexionBD = new DBConection(host, port, schema, username, password);
+    public static IntegrityManager getConnection(String host, String port, String schema, String username, String password) throws SQLException{
+        if(conexionBD == null) conexionBD = new IntegrityManager(host, port, schema, username, password);
         if(!conexionBD.equals(host, port, schema, username, password)){
             try {
                 conexionBD.connection.close();
             } catch (SQLException ex) {
-                Logger.getLogger(DBConection.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(IntegrityManager.class.getName()).log(Level.SEVERE, null, ex);
             }
-            conexionBD = new DBConection(host, port, schema, username, password);
+            conexionBD = new IntegrityManager(host, port, schema, username, password);
         }
         
         return conexionBD;
@@ -176,11 +180,53 @@ public class DBConection {
         return triggers;
     }
     
+    public void writeConstraintsLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"constraints.log"));){
+            for(String constraint: getConstraints()){
+                bw.write(constraint);
+                bw.write("\n");
+            }
+            bw.write(filepath);
+        }
+    }
+    
+    public void writeDatefulAnomaliesLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateful_anomalies.log"));){
+            for(DatefulAnomaly anomaly: getDatefulAnomalies()){
+                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
+                        .stream()
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+        }
+    }
+    public void writeDatelessAnomaliesLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
+            for(DatefulAnomaly anomaly: getDatelessAnomalies()){
+                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
+                        .stream()
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+        }
+    }
+    public void writeTriggersLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"))){
+            for(Trigger trigger: getTriggers()){
+                String newLine = List.of(trigger.name,trigger.table,trigger.isEnabled,trigger.triggerType)
+                        .stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+        }
+    }
+    
     @Override
     public boolean equals(Object obj) {
-        if(!(obj instanceof DBConection)) return false;
+        if(!(obj instanceof IntegrityManager)) return false;
         
-        DBConection other = (DBConection)obj;
+        IntegrityManager other = (IntegrityManager)obj;
         if(!this.host.equals(other.host)) return false;
         if(!this.port.equals(other.port)) return false;
         if(!this.schema.equals(other.schema)) return false;

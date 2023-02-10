@@ -161,7 +161,7 @@
                 </Property>
                 <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
                   <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-                    <TitledBorder title="Integridad Referencial">
+                    <TitledBorder title="Contraints existentes">
                       <Font PropertyName="font" name="Cascadia Mono" size="12" style="1"/>
                       <Color PropertyName="color" blue="ff" green="ff" red="ff" type="rgb"/>
                     </TitledBorder>
@@ -182,7 +182,7 @@
                           <EmptySpace max="-2" attributes="0"/>
                           <Component id="jScrollPane2" min="-2" pref="425" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="btnGenerar" min="-2" pref="120" max="-2" attributes="0"/>
+                          <Component id="btnFillConstraints" min="-2" pref="120" max="-2" attributes="0"/>
                           <EmptySpace pref="14" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -195,7 +195,7 @@
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="137" max="-2" attributes="0"/>
-                          <Component id="btnGenerar" min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="btnFillConstraints" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace pref="133" max="32767" attributes="0"/>
                       </Group>
                   </Group>
@@ -221,7 +221,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JButton" name="btnGenerar">
+                <Component class="javax.swing.JButton" name="btnFillConstraints">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="bf" green="4e" red="0" type="rgb"/>
@@ -240,7 +240,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFillConstraintsActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -302,7 +302,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="518" max="32767" attributes="0"/>
-                          <Component id="btnAnomaliasCONdatos" min="-2" pref="120" max="-2" attributes="0"/>
+                          <Component id="btnFillDatefulAnomalies" min="-2" pref="120" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="21" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -318,7 +318,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="122" max="32767" attributes="0"/>
-                          <Component id="btnAnomaliasCONdatos" min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="btnFillDatefulAnomalies" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="105" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -339,7 +339,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTable" name="tblAnomaliasCONdatos">
+                    <Component class="javax.swing.JTable" name="tblDatefulAnomalies">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                           <Table columnCount="3" rowCount="0">
@@ -374,7 +374,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JButton" name="btnAnomaliasCONdatos">
+                <Component class="javax.swing.JButton" name="btnFillDatefulAnomalies">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="bf" green="4e" red="0" type="rgb"/>
@@ -393,7 +393,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAnomaliasCONdatosActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFillDatefulAnomaliesActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -455,7 +455,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="515" max="32767" attributes="0"/>
-                          <Component id="btnAnomaliasSinDatos" min="-2" pref="120" max="-2" attributes="0"/>
+                          <Component id="btnFillDatelessAnomalies" min="-2" pref="120" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -471,7 +471,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="138" max="-2" attributes="0"/>
-                          <Component id="btnAnomaliasSinDatos" min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="btnFillDatelessAnomalies" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace pref="133" max="32767" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -492,7 +492,7 @@
 
                   <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
                   <SubComponents>
-                    <Component class="javax.swing.JTable" name="tblAnomaliasSINdatos">
+                    <Component class="javax.swing.JTable" name="tblDatelessAnomalies">
                       <Properties>
                         <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
                           <Table columnCount="3" rowCount="4">
@@ -527,7 +527,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JButton" name="btnAnomaliasSinDatos">
+                <Component class="javax.swing.JButton" name="btnFillDatelessAnomalies">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="bf" green="4e" red="0" type="rgb"/>
@@ -546,7 +546,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAnomaliasSinDatosActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFillDatelessAnomaliesActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>
@@ -608,7 +608,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="1" attributes="0">
                           <EmptySpace pref="508" max="32767" attributes="0"/>
-                          <Component id="btnGenerarTriggers" min="-2" pref="120" max="-2" attributes="0"/>
+                          <Component id="btnFillTriggers" min="-2" pref="120" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="24" max="-2" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -624,7 +624,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="143" max="-2" attributes="0"/>
-                          <Component id="btnGenerarTriggers" min="-2" pref="40" max="-2" attributes="0"/>
+                          <Component id="btnFillTriggers" min="-2" pref="40" max="-2" attributes="0"/>
                           <EmptySpace pref="154" max="32767" attributes="0"/>
                       </Group>
                       <Group type="103" rootIndex="1" groupAlignment="0" attributes="0">
@@ -686,7 +686,7 @@
                     </Component>
                   </SubComponents>
                 </Container>
-                <Component class="javax.swing.JButton" name="btnGenerarTriggers">
+                <Component class="javax.swing.JButton" name="btnFillTriggers">
                   <Properties>
                     <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                       <Color blue="bf" green="4e" red="0" type="rgb"/>
@@ -705,7 +705,7 @@
                     </Property>
                   </Properties>
                   <Events>
-                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarTriggersActionPerformed"/>
+                    <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFillTriggersActionPerformed"/>
                   </Events>
                 </Component>
               </SubComponents>

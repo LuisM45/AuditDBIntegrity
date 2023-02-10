@@ -1,18 +1,9 @@
 package edu.epn.aud.b2022.g1.integrityScanner;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -20,9 +11,9 @@ import javax.swing.table.TableModel;
 public class GUIMenuPrincipal extends javax.swing.JFrame {
     private static String filepath = "./";
     
-    DBConection dbConnection;
+    IntegrityManager dbConnection;
 
-    public GUIMenuPrincipal(DBConection dbConnection) {
+    public GUIMenuPrincipal(IntegrityManager dbConnection) {
         initComponents();
         this.dbConnection = dbConnection;
     }
@@ -52,22 +43,22 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jListIntRef = new javax.swing.JList<>();
-        btnGenerar = new javax.swing.JButton();
+        btnFillConstraints = new javax.swing.JButton();
         jPanel6 = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane5 = new javax.swing.JScrollPane();
-        tblAnomaliasCONdatos = new javax.swing.JTable();
-        btnAnomaliasCONdatos = new javax.swing.JButton();
+        tblDatefulAnomalies = new javax.swing.JTable();
+        btnFillDatefulAnomalies = new javax.swing.JButton();
         jPanel7 = new javax.swing.JPanel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane3 = new javax.swing.JScrollPane();
-        tblAnomaliasSINdatos = new javax.swing.JTable();
-        btnAnomaliasSinDatos = new javax.swing.JButton();
+        tblDatelessAnomalies = new javax.swing.JTable();
+        btnFillDatelessAnomalies = new javax.swing.JButton();
         jPanel8 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTriggers = new javax.swing.JTable();
-        btnGenerarTriggers = new javax.swing.JButton();
+        btnFillTriggers = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(7, 91, 147));
@@ -100,20 +91,20 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         jPanel5.setBackground(new java.awt.Color(70, 107, 148));
 
         jPanel1.setBackground(new java.awt.Color(7, 91, 147));
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Integridad Referencial", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cascadia Mono", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Contraints existentes", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cascadia Mono", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
         jPanel1.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
 
         jScrollPane2.setViewportView(jListIntRef);
 
-        btnGenerar.setBackground(new java.awt.Color(0, 78, 191));
-        btnGenerar.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
-        btnGenerar.setForeground(new java.awt.Color(255, 255, 255));
-        btnGenerar.setText("GENERAR");
-        btnGenerar.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnGenerar.addActionListener(new java.awt.event.ActionListener() {
+        btnFillConstraints.setBackground(new java.awt.Color(0, 78, 191));
+        btnFillConstraints.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
+        btnFillConstraints.setForeground(new java.awt.Color(255, 255, 255));
+        btnFillConstraints.setText("GENERAR");
+        btnFillConstraints.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnFillConstraints.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerarActionPerformed(evt);
+                btnFillConstraintsActionPerformed(evt);
             }
         });
 
@@ -125,7 +116,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 425, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillConstraints, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -135,7 +126,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(137, 137, 137)
-                .addComponent(btnGenerar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillConstraints, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(133, Short.MAX_VALUE))
         );
 
@@ -163,7 +154,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         jPanel2.setBackground(new java.awt.Color(7, 91, 147));
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Anomalías con Datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cascadia Mono", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
-        tblAnomaliasCONdatos.setModel(new javax.swing.table.DefaultTableModel(
+        tblDatefulAnomalies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -171,16 +162,16 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 "Nombre Tabla", "Nombre Restricción", "Información"
             }
         ));
-        jScrollPane5.setViewportView(tblAnomaliasCONdatos);
+        jScrollPane5.setViewportView(tblDatefulAnomalies);
 
-        btnAnomaliasCONdatos.setBackground(new java.awt.Color(0, 78, 191));
-        btnAnomaliasCONdatos.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
-        btnAnomaliasCONdatos.setForeground(new java.awt.Color(255, 255, 255));
-        btnAnomaliasCONdatos.setText("GENERAR");
-        btnAnomaliasCONdatos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnAnomaliasCONdatos.addActionListener(new java.awt.event.ActionListener() {
+        btnFillDatefulAnomalies.setBackground(new java.awt.Color(0, 78, 191));
+        btnFillDatefulAnomalies.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
+        btnFillDatefulAnomalies.setForeground(new java.awt.Color(255, 255, 255));
+        btnFillDatefulAnomalies.setText("GENERAR");
+        btnFillDatefulAnomalies.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnFillDatefulAnomalies.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnomaliasCONdatosActionPerformed(evt);
+                btnFillDatefulAnomaliesActionPerformed(evt);
             }
         });
 
@@ -190,7 +181,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(518, Short.MAX_VALUE)
-                .addComponent(btnAnomaliasCONdatos, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillDatefulAnomalies, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(21, 21, 21))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -202,7 +193,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(122, Short.MAX_VALUE)
-                .addComponent(btnAnomaliasCONdatos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillDatefulAnomalies, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(105, 105, 105))
             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel2Layout.createSequentialGroup()
@@ -235,7 +226,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         jPanel3.setBackground(new java.awt.Color(7, 91, 147));
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Anomalías sin Datos", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Cascadia Mono", 1, 12), new java.awt.Color(255, 255, 255))); // NOI18N
 
-        tblAnomaliasSINdatos.setModel(new javax.swing.table.DefaultTableModel(
+        tblDatelessAnomalies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null},
                 {null, null, null},
@@ -254,16 +245,16 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 return canEdit [columnIndex];
             }
         });
-        jScrollPane3.setViewportView(tblAnomaliasSINdatos);
+        jScrollPane3.setViewportView(tblDatelessAnomalies);
 
-        btnAnomaliasSinDatos.setBackground(new java.awt.Color(0, 78, 191));
-        btnAnomaliasSinDatos.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
-        btnAnomaliasSinDatos.setForeground(new java.awt.Color(255, 255, 255));
-        btnAnomaliasSinDatos.setText("GENERAR");
-        btnAnomaliasSinDatos.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnAnomaliasSinDatos.addActionListener(new java.awt.event.ActionListener() {
+        btnFillDatelessAnomalies.setBackground(new java.awt.Color(0, 78, 191));
+        btnFillDatelessAnomalies.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
+        btnFillDatelessAnomalies.setForeground(new java.awt.Color(255, 255, 255));
+        btnFillDatelessAnomalies.setText("GENERAR");
+        btnFillDatelessAnomalies.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnFillDatelessAnomalies.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAnomaliasSinDatosActionPerformed(evt);
+                btnFillDatelessAnomaliesActionPerformed(evt);
             }
         });
 
@@ -273,7 +264,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addContainerGap(515, Short.MAX_VALUE)
-                .addComponent(btnAnomaliasSinDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillDatelessAnomalies, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -285,7 +276,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(138, 138, 138)
-                .addComponent(btnAnomaliasSinDatos, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillDatelessAnomalies, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(133, Short.MAX_VALUE))
             .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel3Layout.createSequentialGroup()
@@ -339,14 +330,14 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(tblTriggers);
 
-        btnGenerarTriggers.setBackground(new java.awt.Color(0, 78, 191));
-        btnGenerarTriggers.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
-        btnGenerarTriggers.setForeground(new java.awt.Color(255, 255, 255));
-        btnGenerarTriggers.setText("GENERAR");
-        btnGenerarTriggers.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        btnGenerarTriggers.addActionListener(new java.awt.event.ActionListener() {
+        btnFillTriggers.setBackground(new java.awt.Color(0, 78, 191));
+        btnFillTriggers.setFont(new java.awt.Font("Cascadia Mono", 1, 12)); // NOI18N
+        btnFillTriggers.setForeground(new java.awt.Color(255, 255, 255));
+        btnFillTriggers.setText("GENERAR");
+        btnFillTriggers.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        btnFillTriggers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGenerarTriggersActionPerformed(evt);
+                btnFillTriggersActionPerformed(evt);
             }
         });
 
@@ -356,7 +347,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
                 .addContainerGap(508, Short.MAX_VALUE)
-                .addComponent(btnGenerarTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(24, 24, 24))
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel4Layout.createSequentialGroup()
@@ -368,7 +359,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(143, 143, 143)
-                .addComponent(btnGenerarTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btnFillTriggers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(154, Short.MAX_VALUE))
             .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel4Layout.createSequentialGroup()
@@ -439,7 +430,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnSalirActionPerformed
 
-    private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
+    private void btnFillConstraintsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFillConstraintsActionPerformed
         try {
             DefaultListModel modelo = new DefaultListModel();
             modelo.addAll(dbConnection.getConstraints());
@@ -447,33 +438,33 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnGenerarActionPerformed
+    }//GEN-LAST:event_btnFillConstraintsActionPerformed
 
-    private void btnAnomaliasCONdatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasCONdatosActionPerformed
+    private void btnFillDatefulAnomaliesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFillDatefulAnomaliesActionPerformed
         try {
-            DefaultTableModel tableModel = getNewTableModel(tblAnomaliasCONdatos.getModel());
+            DefaultTableModel tableModel = getNewTableModel(tblDatefulAnomalies.getModel());
             for (DatefulAnomaly anomaly : dbConnection.getDatefulAnomalies())
                 tableModel.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
             
-            this.tblAnomaliasCONdatos.setModel(tableModel);
+            this.tblDatefulAnomalies.setModel(tableModel);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAnomaliasCONdatosActionPerformed
+    }//GEN-LAST:event_btnFillDatefulAnomaliesActionPerformed
 
-    private void btnAnomaliasSinDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasSinDatosActionPerformed
+    private void btnFillDatelessAnomaliesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFillDatelessAnomaliesActionPerformed
         try {
-            DefaultTableModel tableModel = getNewTableModel(this.tblAnomaliasSINdatos.getModel());
+            DefaultTableModel tableModel = getNewTableModel(this.tblDatelessAnomalies.getModel());
             for (DatefulAnomaly anomaly : dbConnection.getDatelessAnomalies())
                 tableModel.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
                 
-            this.tblAnomaliasSINdatos.setModel(tableModel);
+            this.tblDatelessAnomalies.setModel(tableModel);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnAnomaliasSinDatosActionPerformed
+    }//GEN-LAST:event_btnFillDatelessAnomaliesActionPerformed
 
-    private void btnGenerarTriggersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarTriggersActionPerformed
+    private void btnFillTriggersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFillTriggersActionPerformed
         try {
             DefaultTableModel tableModel = getNewTableModel(tblTriggers.getModel());
             for(Trigger trigger: dbConnection.getTriggers()){
@@ -489,73 +480,28 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_btnGenerarTriggersActionPerformed
+    }//GEN-LAST:event_btnFillTriggersActionPerformed
 
     private void btnGenerarLogsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarLogsActionPerformed
-        writeConstraintsLog();
-        writeDatefulAnomaliesLog();
-        writeDatelessAnomaliesLog();
-        writeTriggersLog();
+        try {
+            dbConnection.writeConstraintsLog(filepath);
+            dbConnection.writeDatefulAnomaliesLog(filepath);
+            dbConnection.writeDatelessAnomaliesLog(filepath);
+            dbConnection.writeTriggersLog(filepath);
+        } catch (IOException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_btnGenerarLogsActionPerformed
     
-    private void writeConstraintsLog(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"constraints.log"));){
-            for(String constraint: dbConnection.getConstraints()){
-                bw.write(constraint);
-                bw.write("\n");
-            }
-            bw.write(filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    
-    private void writeDatefulAnomaliesLog(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateful_anomalies.log"));){
-            for(DatefulAnomaly anomaly: dbConnection.getDatefulAnomalies()){
-                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
-                        .stream()
-                        .collect(Collectors.joining(",", "", "\n"));
-                bw.write(newLine);
-            }
-            bw.write(filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    private void writeDatelessAnomaliesLog(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
-            for(DatefulAnomaly anomaly: dbConnection.getDatelessAnomalies()){
-                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
-                        .stream()
-                        .collect(Collectors.joining(",", "", "\n"));
-                bw.write(newLine);
-            }
-            bw.write(filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    private void writeTriggersLog(){
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
-            for(Trigger trigger: dbConnection.getTriggers()){
-                String newLine = List.of(trigger.name,trigger.table,trigger.isEnabled,trigger.triggerType)
-                        .stream()
-                        .map(String::valueOf)
-                        .collect(Collectors.joining(",", "", "\n"));
-                bw.write(newLine);
-            }
-            bw.write(filepath);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAnomaliasCONdatos;
-    private javax.swing.JButton btnAnomaliasSinDatos;
-    private javax.swing.JButton btnGenerar;
+    private javax.swing.JButton btnFillConstraints;
+    private javax.swing.JButton btnFillDatefulAnomalies;
+    private javax.swing.JButton btnFillDatelessAnomalies;
+    private javax.swing.JButton btnFillTriggers;
     private javax.swing.JButton btnGenerarLogs;
-    private javax.swing.JButton btnGenerarTriggers;
     private javax.swing.JButton btnSalir;
     private javax.swing.JList<String> jListIntRef;
     private javax.swing.JPanel jPanel1;
@@ -571,8 +517,8 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane5;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTable tblAnomaliasCONdatos;
-    private javax.swing.JTable tblAnomaliasSINdatos;
+    private javax.swing.JTable tblDatefulAnomalies;
+    private javax.swing.JTable tblDatelessAnomalies;
     private javax.swing.JTable tblTriggers;
     // End of variables declaration//GEN-END:variables
 }
