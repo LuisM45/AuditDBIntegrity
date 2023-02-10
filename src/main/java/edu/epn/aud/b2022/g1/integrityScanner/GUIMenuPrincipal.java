@@ -15,52 +15,32 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
-/**
- *
- * @author David Arteaga
- */
 public class GUIMenuPrincipal extends javax.swing.JFrame {
-
-    DefaultTableModel modeloUno = new DefaultTableModel();
-    DefaultTableModel modeloSinDatos = new DefaultTableModel();
-    DefaultTableModel modeloTriggers = new DefaultTableModel();
+    private static String filepath = "./";
     
-    List<DatefulAnomaly> datefulAnomalies;
-    /**
-     * Creates new form GUIMenuPrincipal
-     */
+    DBConection dbConnection;
 
-    List<String> miListaIntRef;
-    DBConection miCon;
-
-    public GUIMenuPrincipal(DBConection miCon) {
+    public GUIMenuPrincipal(DBConection dbConnection) {
         initComponents();
-        this.miCon = miCon;
-
-        modeloUno.addColumn("Nombre Tabla");
-        modeloUno.addColumn("Nombre Restricción");
-        modeloUno.addColumn("Información");
-        this.tblAnomaliasCONdatos.setModel(modeloUno);
-
-        modeloSinDatos.addColumn("Clave");
-        modeloSinDatos.addColumn("Columna");
-        modeloSinDatos.addColumn("Nombre Tabla");
-        this.tblAnomaliasSINdatos.setModel(modeloSinDatos);
-
-        modeloTriggers.addColumn("Nombre Trigger");
-        modeloTriggers.addColumn("Tabla");
-        modeloTriggers.addColumn("Habilitado");
-        modeloTriggers.addColumn("Operacion");
-        this.tblTriggers.setModel(modeloTriggers);
-        
-        try {
-            miListaIntRef = miCon.getConstraints();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.dbConnection = dbConnection;
     }
 
+    private static DefaultTableModel getNewTableModel(String... columNames){
+        return new DefaultTableModel(columNames, 0);
+    }
+    
+    private static DefaultTableModel getNewTableModel(TableModel tableModel){
+        final int count = tableModel.getColumnCount();
+        
+        DefaultTableModel newTableModel = new DefaultTableModel();
+        for(int i = 0;i<count;i++)
+            newTableModel.addColumn(tableModel.getColumnName(i));
+        
+        return new DefaultTableModel();
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -185,23 +165,12 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
         tblAnomaliasCONdatos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Nombre Tabla", "Nombre Restricción", "Información"
             }
-        ) {
-            boolean[] canEdit = new boolean [] {
-                false, false, false
-            };
-
-            public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit [columnIndex];
-            }
-        });
+        ));
         jScrollPane5.setViewportView(tblAnomaliasCONdatos);
 
         btnAnomaliasCONdatos.setBackground(new java.awt.Color(0, 78, 191));
@@ -274,7 +243,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 {null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3"
+                "Clave", "Columna", "Nombre Tabla"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -357,7 +326,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Nombre Trigger", "Tabla", "Habilitado", "Operacion"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -472,244 +441,115 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
     private void btnGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarActionPerformed
         try {
-            // TODO add your handling code here:
-            miListaIntRef = miCon.getConstraints();
+            DefaultListModel modelo = new DefaultListModel();
+            modelo.addAll(dbConnection.getConstraints());
+            jListIntRef.setModel(modelo);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        DefaultListModel modelo = new DefaultListModel();
-        for (String bucle : miListaIntRef) {
-            modelo.addElement(bucle);
-        }
-        jListIntRef.setModel(modelo);
-
-
     }//GEN-LAST:event_btnGenerarActionPerformed
 
     private void btnAnomaliasCONdatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasCONdatosActionPerformed
         try {
-            // TODO add your handling code here:
-            datefulAnomalies = miCon.getDatefulAnomalies();
+            DefaultTableModel tableModel = getNewTableModel(tblAnomaliasCONdatos.getModel());
+            for (DatefulAnomaly anomaly : dbConnection.getDatefulAnomalies())
+                tableModel.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
+            
+            this.tblAnomaliasCONdatos.setModel(tableModel);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        //DefaultListModel modelo = new DefaultListModel();
-        for (DatefulAnomaly anomaly : datefulAnomalies) {
-            modeloUno.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
-        }
-
-        this.tblAnomaliasCONdatos.setModel(modeloUno);
-
-        //JLIstAnomaliasConDatos.setModel(modelo);
-
     }//GEN-LAST:event_btnAnomaliasCONdatosActionPerformed
 
     private void btnAnomaliasSinDatosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnomaliasSinDatosActionPerformed
-        // TODO add your handling code here:
-        List<DatefulAnomaly> anomalies = new ArrayList<>(0);
         try {
-            anomalies = miCon.getDatelessAnomalies();
+            DefaultTableModel tableModel = getNewTableModel(this.tblAnomaliasSINdatos.getModel());
+            for (DatefulAnomaly anomaly : dbConnection.getDatelessAnomalies())
+                tableModel.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
+                
+            this.tblAnomaliasSINdatos.setModel(tableModel);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-        for (DatefulAnomaly anomaly : anomalies) {
-            modeloSinDatos.addRow(new String[]{anomaly.constraint,anomaly.table,anomaly.where});
-        }
-
-        this.tblAnomaliasSINdatos.setModel(modeloSinDatos);
-    
-
     }//GEN-LAST:event_btnAnomaliasSinDatosActionPerformed
 
     private void btnGenerarTriggersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarTriggersActionPerformed
-        // TODO add your handling code here:
-        List<Trigger> triggers = new ArrayList<>(0);
         try {
-            triggers = miCon.getTriggers();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        for (Trigger trigger : triggers){
-            modeloTriggers.addRow(
-                    new String[]{
+            DefaultTableModel tableModel = getNewTableModel(tblTriggers.getModel());
+            for(Trigger trigger: dbConnection.getTriggers()){
+                tableModel.addRow(new String[]{
                         trigger.name,
                         trigger.table,
                         String.valueOf(trigger.isEnabled),
-                        trigger.triggerType.toString(),
-                        "",
-                        ""
+                        trigger.triggerType.toString()
                     });
+            }
+            
+            this.tblTriggers.setModel(tableModel);
+        } catch (SQLException ex) {
+            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
-
-        this.tblTriggers.setModel(modeloTriggers);
     }//GEN-LAST:event_btnGenerarTriggersActionPerformed
 
     private void btnGenerarLogsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarLogsActionPerformed
-        String ruta = "IntegridadReferencial.txt";
-        File f = new File(ruta);
-        FileWriter fw = null;
-        try {
-            fw = new FileWriter(f);
-        } catch (IOException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        BufferedWriter escritura = new BufferedWriter(fw);
-        for (int i = 0; i < miListaIntRef.size(); i++) {
-            try {
-                escritura.write(String.valueOf(miListaIntRef.get(i)));
-            } catch (IOException ex) {
-                Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            try {
-                escritura.newLine();
-            } catch (IOException ex) {
-                Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
-        }
-        try {
-            escritura.close();
-        } catch (IOException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //****************************************************************************
-        List<DatefulAnomaly> miLista = new ArrayList<>(0);
-        try {
-            miLista = miCon.getDatefulAnomalies();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        try {
-            String miRutaUno = "anomaliasConDatos.txt";
-
-            String aux = "";
-            for (DatefulAnomaly anomalia : miLista) {
-                aux += Stream.of(anomalia.constraint,anomalia.table,anomalia.where)
-                        .map(String::valueOf)
-                        .map(s1->s1+" ")
-                        .reduce("", (s1,s2)->s1+s2)+"\n";
-            }
-
-            File fileUno = new File(miRutaUno);
-            // Si el archivo no existe es creado
-            if (!fileUno.exists()) {
-                fileUno.createNewFile();
-            }
-            FileWriter fwUno = new FileWriter(fileUno);
-            BufferedWriter bwUno = new BufferedWriter(fwUno);
-            bwUno.write(aux);
-            bwUno.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        //**************************************************************************************
-        List<DatefulAnomaly> miListaDos = new ArrayList<>(0);
-        try {
-            miListaDos = miCon.getDatelessAnomalies();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            String miRutaDos = "anomaliasSinDatos.txt";
-
-            String aux = "";
-            for (DatefulAnomaly anomalia : miListaDos) {
-                aux += Stream.of(anomalia.constraint,anomalia.table,anomalia.where)
-                        .map(String::valueOf)
-                        .map(s1->s1+" ")
-                        .reduce("", (s1,s2)->s1+s2)+"\n";
-            }
-
-            File fileDos = new File(miRutaDos);
-            // Si el archivo no existe es creado
-            if (!fileDos.exists()) {
-                fileDos.createNewFile();
-            }
-            FileWriter fwDos = new FileWriter(fileDos);
-            BufferedWriter bwDos = new BufferedWriter(fwDos);
-            bwDos.write(aux);
-            bwDos.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        
-        //************************************************************************
-        List<Trigger> miListaTres = new ArrayList<>(0);
-        try {
-            miListaTres = miCon.getTriggers();
-        } catch (SQLException ex) {
-            Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        try {
-            String miRutaTres = "auditoriaIUD.txt";
-
-            String aux = "";
-            for (Trigger trigger : miListaTres) {
-                aux += Stream.of(
-                        trigger.name,
-                        trigger.table,
-                        (Boolean)trigger.isEnabled,
-                        trigger.triggerType)
-                    .map(String::valueOf)
-                    .map(s1->s1+" ")
-                    .reduce("", (s1,s2)->s1+s2)+"\n";
-            }
-
-            File fileTres = new File(miRutaTres);
-            // Si el archivo no existe es creado
-            if (!fileTres.exists()) {
-                fileTres.createNewFile();
-            }
-            FileWriter fwTres = new FileWriter(fileTres);
-            BufferedWriter bwTres = new BufferedWriter(fwTres);
-            bwTres.write(aux);
-            bwTres.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+        writeConstraintsLog();
+        writeDatefulAnomaliesLog();
+        writeDatelessAnomaliesLog();
+        writeTriggersLog();
     }//GEN-LAST:event_btnGenerarLogsActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
+    
+    private void writeConstraintsLog(){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"constraints.log"));){
+            for(String constraint: dbConnection.getConstraints()){
+                bw.write(constraint);
+                bw.write("\n");
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(GUIMenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(GUIMenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(GUIMenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(GUIMenuPrincipal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            bw.write(filepath);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GUIMenuPrincipal(null).setVisible(true); //Editado
-            }
-        });
     }
-
+    
+    private void writeDatefulAnomaliesLog(){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateful_anomalies.log"));){
+            for(DatefulAnomaly anomaly: dbConnection.getDatefulAnomalies()){
+                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
+                        .stream()
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+            bw.write(filepath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void writeDatelessAnomaliesLog(){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
+            for(DatefulAnomaly anomaly: dbConnection.getDatelessAnomalies()){
+                String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
+                        .stream()
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+            bw.write(filepath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    private void writeTriggersLog(){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
+            for(Trigger trigger: dbConnection.getTriggers()){
+                String newLine = List.of(trigger.name,trigger.table,trigger.isEnabled,trigger.triggerType)
+                        .stream()
+                        .map(String::valueOf)
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+            bw.write(filepath);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAnomaliasCONdatos;
     private javax.swing.JButton btnAnomaliasSinDatos;
