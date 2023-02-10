@@ -29,7 +29,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
         for(int i = 0;i<count;i++)
             newTableModel.addColumn(tableModel.getColumnName(i));
         
-        return new DefaultTableModel();
+        return newTableModel;
     }
     
     @SuppressWarnings("unchecked")
@@ -228,10 +228,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
         tblDatelessAnomalies.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Clave", "Columna", "Nombre Tabla"
@@ -311,10 +308,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
 
         tblTriggers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Nombre Trigger", "Tabla", "Habilitado", "Operacion"
