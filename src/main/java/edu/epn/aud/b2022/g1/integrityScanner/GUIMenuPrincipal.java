@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
@@ -430,6 +431,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             modelo.addAll(dbConnection.getConstraints());
             jListIntRef.setModel(modelo);
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnFillConstraintsActionPerformed
@@ -442,6 +444,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             
             this.tblDatefulAnomalies.setModel(tableModel);
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnFillDatefulAnomaliesActionPerformed
@@ -454,6 +457,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
                 
             this.tblDatelessAnomalies.setModel(tableModel);
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnFillDatelessAnomaliesActionPerformed
@@ -472,6 +476,7 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             
             this.tblTriggers.setModel(tableModel);
         } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnFillTriggersActionPerformed
@@ -484,8 +489,11 @@ public class GUIMenuPrincipal extends javax.swing.JFrame {
             dbConnection.writeTriggersLog(filepath);
         } catch (IOException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la escritura del log",JOptionPane.ERROR_MESSAGE);
         } catch (SQLException ex) {
             Logger.getLogger(GUIMenuPrincipal.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
+
         }
     }//GEN-LAST:event_btnGenerarLogsActionPerformed
     

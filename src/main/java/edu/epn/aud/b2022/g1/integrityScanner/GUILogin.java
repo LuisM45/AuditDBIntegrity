@@ -191,6 +191,7 @@ public GUILogin() {
                 ventana.setVisible(true);
                 
             } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(null,ex.getLocalizedMessage(), "Error con la base de datos",JOptionPane.ERROR_MESSAGE);
                 Logger.getLogger(GUILogin.class.getName()).log(Level.SEVERE, null, ex);
             }
                 

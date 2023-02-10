@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import javax.swing.JOptionPane;
 
 public class IntegrityManager {
     private static IntegrityManager conexionBD = null;
@@ -38,11 +39,7 @@ public class IntegrityManager {
     public static IntegrityManager getConnection(String host, String port, String schema, String username, String password) throws SQLException{
         if(conexionBD == null) conexionBD = new IntegrityManager(host, port, schema, username, password);
         if(!conexionBD.equals(host, port, schema, username, password)){
-            try {
-                conexionBD.connection.close();
-            } catch (SQLException ex) {
-                Logger.getLogger(IntegrityManager.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            conexionBD.connection.close();
             conexionBD = new IntegrityManager(host, port, schema, username, password);
         }
         
