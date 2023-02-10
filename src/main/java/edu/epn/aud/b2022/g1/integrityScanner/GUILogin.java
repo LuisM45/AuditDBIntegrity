@@ -166,7 +166,7 @@ public GUILogin() {
 
     private void btnConectarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConectarActionPerformed
         // TODO add your handling code here:
-        DBConection miCon;
+        IntegrityManager miCon;
         GUIMenuPrincipal ventana;
         if(txtUsuario.getText().trim().isEmpty() || jPFPassword.getPassword().length==0 || txtBD.getText().trim().isEmpty()
                 || txtServidor.getText().trim().isEmpty()){
@@ -178,7 +178,7 @@ public GUILogin() {
                 if(hostPortTup.length == 2) port = hostPortTup[1];
                 String host = hostPortTup[0];
                 
-                miCon = DBConection.getConnection(
+                miCon = IntegrityManager.getConnection(
                         host,
                         port,
                         txtBD.getText().trim(),
