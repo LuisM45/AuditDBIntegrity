@@ -205,7 +205,7 @@ public class IntegrityManager {
         }
     }
     public void writeTriggersLog(String filepath) throws IOException, SQLException{
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"))){
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"triggers.log"))){
             for(Trigger trigger: getTriggers()){
                 String newLine = List.of(trigger.name,trigger.table,trigger.isEnabled,trigger.triggerType)
                         .stream()
