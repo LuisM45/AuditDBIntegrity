@@ -7,10 +7,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class IntegrityManager {
     private static IntegrityManager conexionBD = null;
@@ -49,7 +56,7 @@ public class IntegrityManager {
                 "database="+schema+";"+
                 "user="+username+";"+
                 "password="+password+";"+
-                "trustServerCertificate=false;"+
+                "trustServerCertificate=true;"+
                 "loginTimeout=10;";
 
         connection = DriverManager.getConnection(connectionUrl);
@@ -90,8 +97,180 @@ public class IntegrityManager {
         
         return datefulAnomalies;
     }
+    
+    public List<DatalessAnomaly> getDatalessAnomalies()throws SQLException{
+        List<DatalessAnomaly> allAnomalies = new ArrayList<>();
+        allAnomalies.addAll(getIsolatedTables());
+        allAnomalies.addAll(getFalseFKs());
+        return allAnomalies;
+    }
+    
+    public List<Column> getAllColumns() throws SQLException{
+       
+        String query =
+                """
+                select 
+                	col.name as column_name,
+                	tab.name as table_name
+                from sys.tables tab
+                inner join sys.columns col
+                	on col.object_id = tab.object_id
+                """;
+        List<Column> columns = columns = new LinkedList<>();
+        try (Statement stmt = this.connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String tableName = rs.getString("table_name");
+                String columnName = rs.getString("column_name");
+                columns.add(new Column(tableName, columnName));
+            }   rs.close();
+        }
+        
+        
+        return columns;
+    }
+    
+        public List<Column> getAllPKColumns() throws SQLException{
+       
+        String query =
+                """
+                select 
+                	col.name as column_name,
+                	tab.name as table_name
+                from sys.tables tab
+                inner join sys.indexes pk
+                	on tab.object_id = pk.object_id 
+                	and pk.is_primary_key = 1
+                inner join sys.index_columns ic
+                	on ic.index_id = pk.index_id
+                	and ic.object_id = tab.object_id
+                inner join sys.columns col
+                    on col.column_id = ic.column_id
+                	and col.object_id = tab.object_id
+                """;
+        List<Column> columns = columns = new LinkedList<>();
+        try (Statement stmt = this.connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String tableName = rs.getString("table_name");
+                String columnName = rs.getString("column_name");
+                columns.add(new Column(tableName, columnName));
+            }   rs.close();
+        }
+        
+        
+        return columns;
+    }
+        
+    public List<Column> getAllFKColumns() throws SQLException{
+       
+        String query =
+                """
+                select
+                        tab.name as table_name,
+                        col.name as column_name
+                from sys.tables tab
+                inner join sys.foreign_keys fk
+                        on tab.object_id = fk.parent_object_id
+                inner join sys.foreign_key_columns fc
+                        on fc.constraint_object_id = fk.object_id
+                inner join sys.columns col
+                        on col.column_id = fc.parent_column_id
+                        and col.object_id = tab.object_id
+                """;
+        List<Column> columns = columns = new LinkedList<>();
+        try (Statement stmt = this.connection.createStatement()) {
+            ResultSet rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                String tableName = rs.getString("table_name");
+                String columnName = rs.getString("column_name");
+                columns.add(new Column(tableName, columnName));
+            }   rs.close();
+        }
+        
+        
+        return columns;
+    }
+    
+    public List<DatalessAnomaly> getIsolatedTables()throws SQLException{
+        String query = 
+                "";
+        Collection<Column> allColumns = new HashSet<>(getAllColumns());
+        Collection<Column> fkColumns = new HashSet<>(getAllFKColumns());
+        
+        Map<String,Set<String>> tablesNColumns = new HashMap<>();
+        
+        for(Column c: allColumns){
+            if(!tablesNColumns.containsKey(c.tableName)){
+                tablesNColumns.put(c.tableName, new HashSet<>());
+            }
+            tablesNColumns.get(c.tableName).add(c.columnName);
+        }
+        
+        Map<String,Boolean> isTableReferenced = new HashMap<>();
+        for(String tableName: tablesNColumns.keySet())
+            isTableReferenced.put(tableName,false);
+        
+        
+        
+        
+        
+        
+        for(Column c: fkColumns){
+            
+            for(Map.Entry<String,Set<String>> entrySet: tablesNColumns.entrySet()){
+                String tableName = entrySet.getKey();
+                Set<String> columnNames = entrySet.getValue();
+                
+                if(c.tableName.equals(tableName)) continue;
+                if(columnNames.contains(c.columnName))
+                    isTableReferenced.put(tableName,true);
+            }
+        }
 
-    public List<DatefulAnomaly>getDatelessAnomalies() throws SQLException{
+        
+        return isTableReferenced.entrySet().stream()
+                .filter(e->!e.getValue())
+                .map(t->new DatalessAnomaly(
+                        t.getKey(),
+                        String.format("%s no es referenciado.", t.getKey()),
+                        "Tabla aislada"))
+                .toList();
+    }
+    
+    public List<DatalessAnomaly> getFalseFKs()throws SQLException{
+        String query = 
+                "";
+        Collection<Column> allColumns = new HashSet<>(getAllColumns());
+        Collection<Column> pkColumns = new HashSet<>(getAllPKColumns());
+        Collection<Column> fkColumns = new HashSet<>(getAllFKColumns());
+        
+        Collection<Column> rogueColumns = allColumns
+                .stream()
+                .filter(t->!fkColumns.contains(t))
+                .collect(Collectors.toSet());
+        
+        List<DatalessAnomaly> falseFKs = new LinkedList<>();
+        for(Column primaryCol: pkColumns){
+            for(Column rogueCol: rogueColumns){
+                if(primaryCol.columnName.equals(rogueCol.columnName)
+                        && !primaryCol.tableName.equals(rogueCol.tableName)
+                        && !(fkColumns.contains(primaryCol)||fkColumns.contains(rogueCol)))
+                    falseFKs.add(new DatalessAnomaly(
+                            rogueCol.tableName,
+                            String.format("%s podría referenciar %s", rogueCol,primaryCol),
+                            "Referencia(FK) faltante.")
+                    );
+            }
+        }
+        
+        
+        
+        return falseFKs;
+    }
+
+
+    public List<DatefulAnomaly>getDupedKeynames() throws SQLException{
         String query =
                 "DECLARE @PKs TABLE (                                                 "+
                 "    pk_name nvarchar(1024),                                          "+
@@ -194,10 +373,20 @@ public class IntegrityManager {
             }
         }
     }
-    public void writeDatelessAnomaliesLog(String filepath) throws IOException, SQLException{
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dateless_anomalies.log"));){
-            for(DatefulAnomaly anomaly: getDatelessAnomalies()){
+    public void writeKeysAnomaliesLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"keys_anomalies.log"));){
+            for(DatefulAnomaly anomaly: getDupedKeynames()){
                 String newLine = List.of(anomaly.constraint,anomaly.table,anomaly.where)
+                        .stream()
+                        .collect(Collectors.joining(",", "", "\n"));
+                bw.write(newLine);
+            }
+        }
+    }
+    public void writeDatalessAnomaliesLog(String filepath) throws IOException, SQLException{
+        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filepath+"dataless_anomalies.log"));){
+            for(DatalessAnomaly anomaly: getDatalessAnomalies()){
+                String newLine = List.of(anomaly.table,anomaly.constraintExpected,anomaly.description)
                         .stream()
                         .collect(Collectors.joining(",", "", "\n"));
                 bw.write(newLine);
@@ -248,6 +437,9 @@ public class IntegrityManager {
     }
     
     
-    
+    record Column(String tableName, String columnName){
+        @Override
+        public String toString(){return tableName+"."+columnName;};
+    };
 }
 

@@ -52,20 +52,15 @@
     <properties>
         
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>13</maven.compiler.source>
-        <maven.compiler.target>13</maven.compiler.target>
+        <maven.compiler.source>18</maven.compiler.source>
+        <maven.compiler.target>18</maven.compiler.target>
         <exec.mainClass>edu.epn.aud.b2022.g1.integrityScanner.Main</exec.mainClass>
     </properties>
     <dependencies>
         <dependency>
-            <groupId>org.sonarsource.scanner.maven</groupId>
-            <artifactId>sonar-maven-plugin</artifactId>
-            <version>3.9.1.2184</version>
-        </dependency>
-        <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>8.2.2.jre13</version>
+            <version>11.2.2.jre18</version>
         </dependency>
     </dependencies>
 </project>
